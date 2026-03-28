@@ -37,12 +37,8 @@
 
         .btn-main { background: var(--primary); color: white; border: none; padding: 20px; border-radius: 18px; font-weight: 700; font-size: 1.1rem; width: 100%; cursor: pointer; transition: 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
         
-        /* BENTO GRID - INTERACTIVE FIX */
         .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .bento-item { 
-            background: white; border: 1px solid var(--border); padding: 18px; 
-            border-radius: 20px; cursor: pointer; transition: 0.2s; position: relative; z-index: 10;
-        }
+        .bento-item { background: white; border: 1px solid var(--border); padding: 18px; border-radius: 20px; cursor: pointer; transition: 0.2s; position: relative; z-index: 10; }
         .bento-item:hover { border-color: var(--primary); background: var(--primary-light); transform: translateY(-3px); }
         .b-label { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; pointer-events: none; }
         .b-val { display: block; font-size: 1.1rem; font-weight: 800; margin-top: 4px; pointer-events: none; }
@@ -131,7 +127,7 @@
                 <div id="dtVal" style="font-size:3.2rem; font-weight:900; margin:10px 0; color:var(--primary);">0.0000g</div>
                 
                 <div style="text-align:left; background:white; padding:20px; border-radius:20px; border:1px solid var(--border); font-size:0.95rem; line-height:1.5;">
-                    <b style="color:var(--primary)">Personalized Insight:</b><br>
+                    <b style="color:var(--primary)">Detailed Health Insight:</b><br>
                     <span id="dtDesc"></span>
                 </div>
                 
@@ -154,13 +150,15 @@
     let activeProd = null; let activePrice = 0; const qrcode = new Html5Qrcode("reader");
 
     const allNutrients = {
-        'energy-kcal_100g': { label: 'Calories', icon: '⚡', unit: 'kcal', wiki: 'Energy fuel for bodily functions.' },
-        'sugars_100g': { label: 'Sugars', icon: '🍬', unit: 'g', wiki: 'Fast energy, watch for crashes.' },
-        'proteins_100g': { label: 'Protein', icon: '💪', unit: 'g', wiki: 'Building blocks for muscle.' },
-        'fat_100g': { label: 'Total Fat', icon: '🥑', unit: 'g', wiki: 'Energy and vitamin absorption.' },
-        'saturated-fat_100g': { label: 'Saturated Fat', icon: '🍔', unit: 'g', wiki: 'Monitor for heart health.' },
-        'salt_100g': { label: 'Salt/Sodium', icon: '🧂', unit: 'g', wiki: 'Fluid balance and blood pressure.' },
-        'fiber_100g': { label: 'Fiber', icon: '🥦', unit: 'g', wiki: 'Digestive health.' }
+        'energy-kcal_100g': { label: 'Calories', icon: '⚡', unit: 'kcal', wiki: 'Calories are the energy units your body uses to function. They fuel everything from your heartbeat to your thinking.' },
+        'sugars_100g': { label: 'Sugars', icon: '🍬', unit: 'g', wiki: 'Sugars are simple carbohydrates. While they provide quick energy, high levels can lead to health issues like tooth decay and metabolic concerns.' },
+        'proteins_100g': { label: 'Protein', icon: '💪', unit: 'g', wiki: 'Protein is essential for the repair and growth of body tissues, including muscles, skin, and organs.' },
+        'fat_100g': { label: 'Total Fat', icon: '🥑', unit: 'g', wiki: 'Fats provide long-term energy and help your body absorb fat-soluble vitamins like A, D, E, and K.' },
+        'saturated-fat_100g': { label: 'Saturated Fat', icon: '🍔', unit: 'g', wiki: 'Often found in animal products, saturated fats are usually solid at room temperature. Monitoring these is key for heart health.' },
+        'salt_100g': { label: 'Salt/Sodium', icon: '🧂', unit: 'g', wiki: 'Sodium helps maintain fluid balance and nerve function, but excessive amounts can contribute to high blood pressure.' },
+        'fiber_100g': { label: 'Fiber', icon: '🥦', unit: 'g', wiki: 'Fiber is a type of carbohydrate your body can\'t digest. It aids in digestion and helps regulate blood sugar.' },
+        'calcium_100g': { label: 'Calcium', icon: '🦴', unit: 'g', wiki: 'Crucial for bone density and strength, as well as muscle and nerve communication.' },
+        'iron_100g': { label: 'Iron', icon: '🧲', unit: 'g', wiki: 'Iron is vital for creating hemoglobin, which carries oxygen from your lungs to the rest of your body.' }
     };
 
     function navigateTo(id) {
@@ -188,7 +186,6 @@
         document.getElementById('resName').innerText = activeProd.product_name || "Unknown Item";
         document.getElementById('resPrice').innerText = `$${activePrice.toFixed(2)}`;
         
-        // Verdict Logic
         const nut = activeProd.nutriments;
         const sugar = nut['sugars_100g'] || 0;
         const salt = nut['salt_100g'] || 0;
@@ -198,13 +195,13 @@
         
         if (sugar < 5 && salt < 0.3 && fat < 1.5) {
             b.innerText = "Healthy Choice"; b.className = "verdict-badge v-good";
-            t.innerText = "Highly recommended! Low in sugar, sodium, and saturated fats.";
+            t.innerText = "This product has a clean profile. Its low levels of processed sugars and sodium make it a highly favorable option for daily consumption.";
         } else if (sugar > 20 || salt > 1.3 || fat > 5) {
-            b.innerText = "Limit Intake"; b.className = "verdict-badge v-bad";
-            t.innerText = "High in sugar, salt, or saturated fats. Best enjoyed occasionally.";
+            b.innerText = "Enjoy in Moderation"; b.className = "verdict-badge v-bad";
+            t.innerText = "This item is high in specific impact markers (sugar, salt, or fat). It is better categorized as a treat rather than a dietary staple.";
         } else {
             b.innerText = "Balanced Option"; b.className = "verdict-badge v-mid";
-            t.innerText = "Moderate nutrient profile. A solid choice for a balanced diet.";
+            t.innerText = "A moderate nutrient profile suitable for a balanced diet. It provides necessary nutrients without excessive high-impact additives.";
         }
 
         const g = document.getElementById('resGrid'); g.innerHTML = '';
@@ -213,7 +210,6 @@
             if (v !== undefined) {
                 const d = document.createElement('div');
                 d.className = 'bento-item';
-                // RE-BUILT INTERACTION ENGINE
                 d.setAttribute('onclick', `showDetail('${k}', ${v})`);
                 d.innerHTML = `<span class="b-label">${allNutrients[k].label}</span><span class="b-val">${v.toFixed(4)}${allNutrients[k].unit}</span>`;
                 g.appendChild(d);
@@ -229,11 +225,21 @@
         document.getElementById('dtVal').innerText = p + allNutrients[key].unit;
         
         let insight = ""; const num = parseFloat(p);
-        if (key === 'energy-kcal_100g') insight = num > 250 ? "High fuel density. Great for energy but consume in moderation." : "Low energy density, perfect for a light snack.";
-        else if (key === 'sugars_100g') insight = num > 15 ? "High sugar. Will provide a quick burst but watch for the insulin spike." : "Low sugar, excellent for stable energy.";
-        else if (key === 'proteins_100g') insight = num > 10 ? "Great protein boost! Ideal for muscle maintenance and satiety." : "Modest protein levels for basic maintenance.";
-        else if (key === 'salt_100g') insight = num > 1.2 ? "High sodium detected. Be mindful of your heart health and hydration." : "Heart-healthy sodium levels.";
-        else insight = `This item contains ${p}${allNutrients[key].unit} per 100g, contributing to your daily balanced nutrition.`;
+        if (key === 'energy-kcal_100g') {
+            insight = num > 250 ? `At ${p}kcal per 100g, this is an energy-dense food. It is highly efficient fuel for physically demanding tasks, but should be portion-controlled to avoid energy storage (fat).` : `This is a low-energy-density item (${p}kcal). It is excellent for volume eating, allowing you to feel full without exceeding your daily caloric budget.`;
+        } else if (key === 'sugars_100g') {
+            insight = num > 15 ? `The sugar concentration is high (${p}g). This will trigger a rapid insulin response, providing a "rush" followed by a potential crash. Frequent intake can stress metabolic health.` : `With only ${p}g of sugar, this item provides a stable glycemic response. This helps prevent energy dips and supports long-term blood sugar stability.`;
+        } else if (key === 'proteins_100g') {
+            insight = num > 10 ? `A powerful protein source (${p}g). This amount is superior for muscle fiber repair and promoting "satiety" (the feeling of being full), which helps with weight management.` : `This contains a modest amount of protein (${p}g). It contributes to your daily baseline requirement for maintaining cellular health and tissue repair.`;
+        } else if (key === 'salt_100g') {
+            insight = num > 1.2 ? `High sodium detected (${p}g). Excessive salt pulls water into your bloodstream, which can increase blood pressure. Pair this with plenty of water to help your kidneys balance it.` : `A heart-friendly sodium level (${p}g). This allows your body to maintain fluid balance without putting undue pressure on your cardiovascular system.`;
+        } else if (key === 'fiber_100g') {
+            insight = num > 5 ? `Excellent fiber density (${p}g)! Fiber slows down the absorption of sugar and keeps your digestive tract moving smoothly. It is a "superhero" for gut health.` : `Contains a light amount of fiber (${p}g). It provides a small contribution toward your daily goal of keeping your digestive system efficient.`;
+        } else if (key === 'fat_100g') {
+            insight = num > 20 ? `High fat content (${p}g). While fats are essential, they are very calorie-dense. This item is rich and satisfying but should be enjoyed in smaller portions.` : `Low fat profile (${p}g). This keeps the overall calorie count down and makes the item feel light on the stomach.`;
+        } else {
+            insight = `This item contains ${p}${allNutrients[key].unit} per 100g. This laboratory measurement confirms its role in a balanced nutritional profile, supporting your body's specific mineral and vitamin needs.`;
+        }
 
         document.getElementById('dtDesc').innerText = insight;
         const wikiBox = document.getElementById('wikiBox'); wikiBox.style.display = 'none'; wikiBox.innerText = allNutrients[key].wiki;
@@ -253,7 +259,7 @@
         const s = JSON.parse(localStorage.getItem('v5_stash') || '[]');
         const l = document.getElementById('stash-list'); const t = document.getElementById('stash-total');
         if (s.length > 0) {
-            l.innerHTML = s.map(i => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border);"><div><b>${i.name}</b><br><span onclick="remove(${i.id})" style="color:red; cursor:pointer; font-size:0.75rem; font-weight:700;">Remove</span></div><b>$${i.price.toFixed(2)}</b></div>`).join('');
+            l.innerHTML = s.map(i => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed var(--border);"><div><b>${i.name}</b><br><span onclick="remove(${i.id})" style="color:red; cursor:pointer; font-size:0.75rem; font-weight:700;">Remove</span></div><b>$${i.price.toFixed(2)}</b></div>`).join('');
             t.innerText = `$${s.reduce((sum, i) => sum + i.price, 0).toFixed(2)}`;
         } else { l.innerHTML = "Stash is currently empty."; t.innerText = "$0.00"; }
     }
