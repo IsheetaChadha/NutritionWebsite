@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriSnap | Total Food Intelligence</title>
+    <title>NutriSnap | Intelligent Food Analysis</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
     <style>
@@ -19,17 +19,14 @@
         .active { display: block; animation: fadeInUp 0.4s ease forwards; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* HEADER & HERO */
         header { padding: 20px 25px 0; }
         .logo { font-weight: 800; font-size: 1.6rem; color: var(--primary); letter-spacing: -1.5px; }
         .hero h1 { font-size: 2.2rem; margin: 5px 0 0; letter-spacing: -1.5px; line-height: 1.1; }
         .hero p { color: var(--text-muted); font-size: 1.05rem; margin-top: 15px; }
         
-        /* CARDS */
         .card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; }
         .section-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 30px 0 10px; display: block; }
         
-        /* INTERACTIVE DASHBOARD */
         .btn-main { background: var(--primary); color: white; border: none; padding: 20px; border-radius: 18px; font-weight: 700; font-size: 1.1rem; width: 100%; cursor: pointer; transition: 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
         .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .bento-item { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 18px; cursor: pointer; transition: 0.2s; text-align: left; }
@@ -37,14 +34,12 @@
         .b-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; }
         .b-val { display: block; font-size: 1.1rem; font-weight: 800; margin-top: 4px; color: var(--text-main); }
         
-        /* NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; }
         .nav-tab { background: none; border: none; color: var(--text-muted); font-size: 0.7rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-tab.active { color: var(--primary); }
 
         #reader { width: 100%; border-radius: 24px; overflow: hidden; background: #000; margin-top: 15px; border: 2px solid var(--border); }
         
-        /* ENCYCLOPEDIA SEARCH FEATURE */
         .wiki-box { margin-top: 15px; padding: 18px; background: var(--primary-light); border-radius: 18px; font-size: 0.9rem; border: 1px solid var(--primary); display: none; color: var(--text-main); line-height: 1.5; }
         .wiki-btn { background: white; border: 1px solid var(--primary); color: var(--primary); padding: 10px 15px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 15px; font-size: 0.85rem; width: 100%; }
     </style>
@@ -89,7 +84,7 @@
             </div>
             <div class="card">
                 <b>3. Review & Stash</b>
-                <p style="font-size:0.9rem; color:var(--text-muted);">Tap any nutrient to see its scientific definition. Add the product to your Stash to save the record.</p>
+                <p style="font-size:0.9rem; color:var(--text-muted);">Tap any nutrient to see its health impact. Add the product to your Stash to save the record for your grocery list.</p>
             </div>
             <button class="btn-main" onclick="navigateTo('screen-home')">RETURN TO HOME</button>
         </div>
@@ -106,7 +101,7 @@
                     <h2 id="resName" style="margin:0; font-size:1.4rem; flex:1; padding-right:10px; line-height: 1.2;">Product Name</h2>
                     <div id="resPrice" style="background:#dcfce7; color:#166534; padding:5px 12px; border-radius:10px; font-weight:800; font-size: 0.9rem;">$0.00</div>
                 </div>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin:12px 0;">Select a nutrient card below to open the <b>Deep Analysis</b> search feature and view specific health information.</p>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin:12px 0;">Select a nutrient card below to see how it affects your body.</p>
                 <div class="bento" id="resGrid" style="max-height: 420px; overflow-y: auto; padding: 5px;"></div>
                 <button class="btn-main" style="margin-top:20px;" onclick="commitToStash()">ADD TO MY STASH</button>
             </div>
@@ -119,7 +114,7 @@
                 <div id="dtVal" style="font-size:3.2rem; font-weight:900; margin:10px 0; color:var(--primary);">0.0000g</div>
                 
                 <div style="text-align:left; background:white; padding:20px; border-radius:20px; border:1px solid var(--border); font-size:0.95rem; line-height:1.5;">
-                    <b style="color:var(--primary)">Scientific Linkage:</b><br>
+                    <b style="color:var(--primary)">How this affects you:</b><br>
                     <span id="dtDesc"></span>
                 </div>
                 
@@ -146,12 +141,12 @@
         'sugars_100g': { label: 'Sugars', icon: '🍬', unit: 'g', wiki: 'Simple carbohydrates that provide rapid energy. High intake can lead to blood sugar spikes and energy crashes.' },
         'proteins_100g': { label: 'Protein', icon: '💪', unit: 'g', wiki: 'The fundamental building blocks of muscles, organs, and skin. Necessary for bodily repair and growth.' },
         'fat_100g': { label: 'Total Fat', icon: '🥑', unit: 'g', wiki: 'A concentrated source of energy that helps your body absorb vital vitamins like A, D, and E.' },
-        'saturated-fat_100g': { label: 'Saturated Fat', icon: '🍔', unit: 'g', wiki: 'Fats found mostly in animal products. It is important to monitor these for long-term cardiovascular health.' },
-        'salt_100g': { label: 'Salt/Sodium', icon: '🧂', unit: 'g', wiki: 'A mineral that helps control blood pressure and volume. Too much salt can cause fluid retention.' },
-        'carbohydrates_100g': { label: 'Carbs', icon: '🍞', unit: 'g', wiki: 'The primary energy source for your brain and nervous system. They are converted into glucose.' },
-        'fiber_100g': { label: 'Fiber', icon: '🥦', unit: 'g', wiki: 'A non-digestible carb that aids in digestion, heart health, and keeping you feeling full longer.' },
-        'calcium_100g': { label: 'Calcium', icon: '🦴', unit: 'g', wiki: 'Crucial for building and maintaining strong skeletal structures and dental health.' },
-        'iron_100g': { label: 'Iron', icon: '🧲', unit: 'g', wiki: 'Required for the production of hemoglobin, which carries oxygen throughout your bloodstream.' }
+        'saturated-fat_100g': { label: 'Saturated Fat', icon: '🍔', unit: 'g', wiki: 'Fats found mostly in animal products. It is important to monitor these for heart health.' },
+        'salt_100g': { label: 'Salt/Sodium', icon: '🧂', unit: 'g', wiki: 'A mineral that helps control blood pressure. Too much can cause fluid retention.' },
+        'carbohydrates_100g': { label: 'Carbs', icon: '🍞', unit: 'g', wiki: 'The primary energy source for your brain. They are converted into glucose in your blood.' },
+        'fiber_100g': { label: 'Fiber', icon: '🥦', unit: 'g', wiki: 'A non-digestible carb that aids in digestion and heart health.' },
+        'calcium_100g': { label: 'Calcium', icon: '🦴', unit: 'g', wiki: 'Crucial for building strong skeletal structures and dental health.' },
+        'iron_100g': { label: 'Iron', icon: '🧲', unit: 'g', wiki: 'Required for red blood cells to carry oxygen throughout your body.' }
     };
 
     function navigateTo(id) {
@@ -197,9 +192,26 @@
         document.getElementById('dtLabel').innerText = allNutrients[key].label;
         document.getElementById('dtVal').innerText = p + allNutrients[key].unit;
         
-        document.getElementById('dtDesc').innerText = `To simplify this scan, we linked the product barcode with global database entries. The reading of ${p}${allNutrients[key].unit} represents the precise laboratory measurement detected per 100g sample.`;
+        let insight = "";
+        const num = parseFloat(p);
+
+        // NUTRITIONAL IMPACT LOGIC
+        if (key === 'energy-kcal_100g') {
+            insight = num > 250 ? "This is quite energy-dense. It provides a significant fuel boost for active days." : "This is a light energy choice, perfect for a balanced, low-calorie snack.";
+        } else if (key === 'sugars_100g') {
+            insight = num > 15 ? "This has a high sugar concentration. It will give you quick energy but may lead to a crash later." : "Low sugar content here, helping you maintain steady energy levels throughout the day.";
+        } else if (key === 'proteins_100g') {
+            insight = num > 10 ? "Excellent protein source! This will help significantly with muscle repair and keep you full." : "Contains a modest amount of protein to help support your daily maintenance.";
+        } else if (key === 'salt_100g') {
+            insight = num > 1.2 ? "This is high in sodium. Be mindful of your fluid intake to help your body balance it out." : "Great low-sodium choice, keeping your heart and blood pressure in a happy zone.";
+        } else if (key === 'fiber_100g') {
+            insight = num > 5 ? "High fiber! This is fantastic for your digestion and will keep your hunger satisfied for longer." : "A light touch of fiber to contribute to your daily digestive health.";
+        } else {
+            insight = `This item contains ${p}${allNutrients[key].unit} per 100g. This amount contributes to your daily ${allNutrients[key].label} goals for a balanced body.`;
+        }
+
+        document.getElementById('dtDesc').innerText = insight;
         
-        // Setup Encyclopedia toggle
         const wikiBox = document.getElementById('wikiBox');
         wikiBox.style.display = 'none';
         wikiBox.innerText = allNutrients[key].wiki;
