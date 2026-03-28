@@ -10,7 +10,7 @@
         :root {
             --primary: #4f46e5; --bg: #ffffff; --surface: #f8fafc;
             --text-main: #0f172a; --text-muted: #64748b; --border: #e2e8f0;
-            --primary-light: #eef2ff;
+            --primary-light: #eef2ff; --success: #22c55e; --warning: #f59e0b; --danger: #ef4444;
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
         .app-shell { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 90px; }
@@ -27,21 +27,24 @@
         .card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; }
         .section-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 30px 0 10px; display: block; }
         
+        /* VERDICT BADGE */
+        .verdict-badge { display: inline-block; padding: 8px 16px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; margin-top: 10px; text-transform: uppercase; }
+        .v-good { background: #dcfce7; color: #166534; }
+        .v-mid { background: #fef9c3; color: #854d0e; }
+        .v-bad { background: #fee2e2; color: #991b1b; }
+
         .btn-main { background: var(--primary); color: white; border: none; padding: 20px; border-radius: 18px; font-weight: 700; font-size: 1.1rem; width: 100%; cursor: pointer; transition: 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
         .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .bento-item { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 18px; cursor: pointer; transition: 0.2s; text-align: left; }
-        .bento-item:hover { border-color: var(--primary); background: var(--primary-light); }
-        .b-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; }
-        .b-val { display: block; font-size: 1.1rem; font-weight: 800; margin-top: 4px; color: var(--text-main); }
+        .bento-item { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 18px; cursor: pointer; transition: 0.2s; }
+        .b-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .b-val { display: block; font-size: 1.1rem; font-weight: 800; margin-top: 4px; }
         
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; }
         .nav-tab { background: none; border: none; color: var(--text-muted); font-size: 0.7rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-tab.active { color: var(--primary); }
 
         #reader { width: 100%; border-radius: 24px; overflow: hidden; background: #000; margin-top: 15px; border: 2px solid var(--border); }
-        
-        .wiki-box { margin-top: 15px; padding: 18px; background: var(--primary-light); border-radius: 18px; font-size: 0.9rem; border: 1px solid var(--primary); display: none; color: var(--text-main); line-height: 1.5; }
-        .wiki-btn { background: white; border: 1px solid var(--primary); color: var(--primary); padding: 10px 15px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 15px; font-size: 0.85rem; width: 100%; }
+        .wiki-box { margin-top: 15px; padding: 18px; background: var(--primary-light); border-radius: 18px; font-size: 0.9rem; border: 1px solid var(--primary); display: none; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -53,8 +56,8 @@
         <div id="screen-home" class="screen active">
             <section class="hero">
                 <h1>Welcome.</h1>
-                <p>NutriSnap is a high-precision analysis engine that identifies food products by scanning their barcode and cross-references them against global nutrition and pricing databases to give you clear info on what nutrition is in the item.</p>
-                <button onclick="navigateTo('screen-guide')" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; padding:0; margin-top:10px; font-size: 0.9rem;">📘 New to NutriSnap? View the Guide →</button>
+                <p>NutriSnap is a high-precision analysis engine that identifies food products by scanning barcodes and cross-references them against global databases for clear nutritional info.</p>
+                <button onclick="navigateTo('screen-guide')" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; padding:0; margin-top:10px; font-size: 0.9rem;">📘 New here? View the Guide →</button>
             </section>
 
             <span class="section-label">Main Utility</span>
@@ -62,8 +65,8 @@
 
             <span class="section-label">Session Stash</span>
             <div class="card">
-                <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 10px 0;">The Stash is your session history. It saves items you've scanned and tracks your total estimated costs so you can view your grocery list later.</p>
-                <div id="stash-list" style="font-size:0.9rem;">Stash is currently empty.</div>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 10px 0;">The Stash is your session history. It saves items you've scanned and tracks total estimated costs.</p>
+                <div id="stash-list" style="font-size:0.9rem;">No items saved.</div>
                 <div style="display:flex; justify-content:space-between; margin-top:15px; border-top: 2px solid var(--text-main); padding-top:10px;">
                     <b>Session Est. Cost</b>
                     <b id="stash-total" style="color:var(--primary); font-size: 1.1rem;">$0.00</b>
@@ -76,15 +79,15 @@
             <h1>User Instructions</h1>
             <div class="card">
                 <b>1. Scan Barcode</b>
-                <p style="font-size:0.9rem; color:var(--text-muted);">Point your camera at a food barcode. Our engine uses optical recognition to identify the product immediately.</p>
+                <p style="font-size:0.9rem; color:var(--text-muted);">Point camera at a barcode. We identify the UPC code instantly via optical recognition.</p>
             </div>
             <div class="card">
                 <b>2. Deep Data Analysis</b>
-                <p style="font-size:0.9rem; color:var(--text-muted);">We link with Open Food Facts and the Open Prices API to pull laboratory-verified nutrient markers.</p>
+                <p style="font-size:0.9rem; color:var(--text-muted);">We link with Open Food Facts and the Open Prices API for laboratory-verified data.</p>
             </div>
             <div class="card">
                 <b>3. Review & Stash</b>
-                <p style="font-size:0.9rem; color:var(--text-muted);">Tap any nutrient to see its health impact. Add the product to your Stash to save the record for your grocery list.</p>
+                <p style="font-size:0.9rem; color:var(--text-muted);">Tap any nutrient to see its health impact or a scientific definition. Add the product to your Stash to save the record.</p>
             </div>
             <button class="btn-main" onclick="navigateTo('screen-home')">RETURN TO HOME</button>
         </div>
@@ -98,11 +101,14 @@
         <div id="screen-results" class="screen">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:start;">
-                    <h2 id="resName" style="margin:0; font-size:1.4rem; flex:1; padding-right:10px; line-height: 1.2;">Product Name</h2>
-                    <div id="resPrice" style="background:#dcfce7; color:#166534; padding:5px 12px; border-radius:10px; font-weight:800; font-size: 0.9rem;">$0.00</div>
+                    <div style="flex:1;">
+                        <h2 id="resName" style="margin:0; font-size:1.4rem; line-height: 1.2;">Product Name</h2>
+                        <div id="verdictBadge" class="verdict-badge">Analyzing...</div>
+                    </div>
+                    <div id="resPrice" style="background:#dcfce7; color:#166534; padding:5px 10px; border-radius:10px; font-weight:800; font-size: 0.9rem;">$0.00</div>
                 </div>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin:12px 0;">Select a nutrient card below to see how it affects your body.</p>
-                <div class="bento" id="resGrid" style="max-height: 420px; overflow-y: auto; padding: 5px;"></div>
+                <p id="verdictText" style="font-size:0.85rem; color:var(--text-muted); margin:12px 0; font-style: italic;"></p>
+                <div class="bento" id="resGrid" style="max-height: 400px; overflow-y: auto; padding: 5px;"></div>
                 <button class="btn-main" style="margin-top:20px;" onclick="commitToStash()">ADD TO MY STASH</button>
             </div>
         </div>
@@ -137,16 +143,13 @@
     let activeProd = null; let activePrice = 0; const qrcode = new Html5Qrcode("reader");
 
     const allNutrients = {
-        'energy-kcal_100g': { label: 'Calories', icon: '⚡', unit: 'kcal', wiki: 'Calories are the energy your body gets from food. They are the essential fuel for breathing, moving, and thinking.' },
-        'sugars_100g': { label: 'Sugars', icon: '🍬', unit: 'g', wiki: 'Simple carbohydrates that provide rapid energy. High intake can lead to blood sugar spikes and energy crashes.' },
-        'proteins_100g': { label: 'Protein', icon: '💪', unit: 'g', wiki: 'The fundamental building blocks of muscles, organs, and skin. Necessary for bodily repair and growth.' },
-        'fat_100g': { label: 'Total Fat', icon: '🥑', unit: 'g', wiki: 'A concentrated source of energy that helps your body absorb vital vitamins like A, D, and E.' },
-        'saturated-fat_100g': { label: 'Saturated Fat', icon: '🍔', unit: 'g', wiki: 'Fats found mostly in animal products. It is important to monitor these for heart health.' },
-        'salt_100g': { label: 'Salt/Sodium', icon: '🧂', unit: 'g', wiki: 'A mineral that helps control blood pressure. Too much can cause fluid retention.' },
-        'carbohydrates_100g': { label: 'Carbs', icon: '🍞', unit: 'g', wiki: 'The primary energy source for your brain. They are converted into glucose in your blood.' },
-        'fiber_100g': { label: 'Fiber', icon: '🥦', unit: 'g', wiki: 'A non-digestible carb that aids in digestion and heart health.' },
-        'calcium_100g': { label: 'Calcium', icon: '🦴', unit: 'g', wiki: 'Crucial for building strong skeletal structures and dental health.' },
-        'iron_100g': { label: 'Iron', icon: '🧲', unit: 'g', wiki: 'Required for red blood cells to carry oxygen throughout your body.' }
+        'energy-kcal_100g': { label: 'Calories', icon: '⚡', unit: 'kcal', wiki: 'Energy fuel for bodily functions.' },
+        'sugars_100g': { label: 'Sugars', icon: '🍬', unit: 'g', wiki: 'Fast energy, watch for crashes.' },
+        'proteins_100g': { label: 'Protein', icon: '💪', unit: 'g', wiki: 'Building blocks for muscle.' },
+        'fat_100g': { label: 'Total Fat', icon: '🥑', unit: 'g', wiki: 'Energy and vitamin absorption.' },
+        'saturated-fat_100g': { label: 'Saturated Fat', icon: '🍔', unit: 'g', wiki: 'Monitor for heart health.' },
+        'salt_100g': { label: 'Salt/Sodium', icon: '🧂', unit: 'g', wiki: 'Fluid balance and blood pressure.' },
+        'fiber_100g': { label: 'Fiber', icon: '🥦', unit: 'g', wiki: 'Digestive health.' }
     };
 
     function navigateTo(id) {
@@ -170,9 +173,31 @@
         } else { alert("Product Unknown."); navigateTo('screen-home'); }
     }
 
+    function generateVerdict() {
+        const nut = activeProd.nutriments;
+        const sugar = nut['sugars_100g'] || 0;
+        const salt = nut['salt_100g'] || 0;
+        const fat = nut['saturated-fat_100g'] || 0;
+        
+        const badge = document.getElementById('verdictBadge');
+        const text = document.getElementById('verdictText');
+        
+        if (sugar < 5 && salt < 0.3 && fat < 1.5) {
+            badge.innerText = "Healthy Choice"; badge.className = "verdict-badge v-good";
+            text.innerText = "This item is highly recommended! It is low in sugar, sodium, and saturated fats, making it a great addition to your daily intake.";
+        } else if (sugar > 22 || salt > 1.5 || fat > 5) {
+            badge.innerText = "Limit Consumption"; badge.className = "verdict-badge v-bad";
+            text.innerText = "Take care with this one. High concentrations of sugar, salt, or saturated fats mean this is best enjoyed as an occasional treat.";
+        } else {
+            badge.innerText = "Balanced Option"; badge.className = "verdict-badge v-mid";
+            text.innerText = "This is a standard middle-ground choice. It has a moderate nutrient profile—perfect for a balanced meal plan.";
+        }
+    }
+
     function renderResults() {
         document.getElementById('resName').innerText = activeProd.product_name || "Unknown Item";
         document.getElementById('resPrice').innerText = `$${activePrice.toFixed(2)}`;
+        generateVerdict();
         const g = document.getElementById('resGrid'); g.innerHTML = '';
         Object.keys(allNutrients).forEach(k => {
             const v = activeProd.nutriments[k];
@@ -187,39 +212,21 @@
     }
 
     function showDetail(key, val) {
-        const p = val.toFixed(4);
-        document.getElementById('dtIcon').innerText = allNutrients[key].icon;
+        const p = val.toFixed(4); document.getElementById('dtIcon').innerText = allNutrients[key].icon;
         document.getElementById('dtLabel').innerText = allNutrients[key].label;
         document.getElementById('dtVal').innerText = p + allNutrients[key].unit;
         
-        let insight = "";
-        const num = parseFloat(p);
-
-        // NUTRITIONAL IMPACT LOGIC
-        if (key === 'energy-kcal_100g') {
-            insight = num > 250 ? "This is quite energy-dense. It provides a significant fuel boost for active days." : "This is a light energy choice, perfect for a balanced, low-calorie snack.";
-        } else if (key === 'sugars_100g') {
-            insight = num > 15 ? "This has a high sugar concentration. It will give you quick energy but may lead to a crash later." : "Low sugar content here, helping you maintain steady energy levels throughout the day.";
-        } else if (key === 'proteins_100g') {
-            insight = num > 10 ? "Excellent protein source! This will help significantly with muscle repair and keep you full." : "Contains a modest amount of protein to help support your daily maintenance.";
-        } else if (key === 'salt_100g') {
-            insight = num > 1.2 ? "This is high in sodium. Be mindful of your fluid intake to help your body balance it out." : "Great low-sodium choice, keeping your heart and blood pressure in a happy zone.";
-        } else if (key === 'fiber_100g') {
-            insight = num > 5 ? "High fiber! This is fantastic for your digestion and will keep your hunger satisfied for longer." : "A light touch of fiber to contribute to your daily digestive health.";
-        } else {
-            insight = `This item contains ${p}${allNutrients[key].unit} per 100g. This amount contributes to your daily ${allNutrients[key].label} goals for a balanced body.`;
-        }
+        let insight = ""; const num = parseFloat(p);
+        if (key === 'energy-kcal_100g') insight = num > 250 ? "High fuel density. Great for energy but consume in moderation." : "Low energy density, perfect for a light snack.";
+        else if (key === 'sugars_100g') insight = num > 15 ? "High sugar. Will provide a quick burst but watch for the insulin spike." : "Low sugar, excellent for stable energy.";
+        else if (key === 'proteins_100g') insight = num > 10 ? "Great protein boost! Ideal for muscle maintenance and satiety." : "Modest protein levels for basic maintenance.";
+        else if (key === 'salt_100g') insight = num > 1.2 ? "High sodium detected. Be mindful of your heart health and hydration." : "Heart-healthy sodium levels.";
+        else insight = `This item contains ${p}${allNutrients[key].unit} per 100g, contributing to your daily balanced nutrition.`;
 
         document.getElementById('dtDesc').innerText = insight;
-        
-        const wikiBox = document.getElementById('wikiBox');
-        wikiBox.style.display = 'none';
-        wikiBox.innerText = allNutrients[key].wiki;
-        document.getElementById('wikiBtn').onclick = () => {
-            wikiBox.style.display = wikiBox.style.display === 'none' ? 'block' : 'none';
-        };
-
-        navigateTo('detail-screen');
+        const wikiBox = document.getElementById('wikiBox'); wikiBox.style.display = 'none'; wikiBox.innerText = allNutrients[key].wiki;
+        document.getElementById('wikiBtn').onclick = () => { wikiBox.style.display = wikiBox.style.display === 'none' ? 'block' : 'none'; };
+        navigateTo('screen-detail');
     }
 
     function commitToStash() {
@@ -229,19 +236,19 @@
         location.reload();
     }
 
-    function remove(id) {
-        let s = JSON.parse(localStorage.getItem('final_v1') || '[]');
-        localStorage.setItem('final_v1', JSON.stringify(s.filter(i => i.id !== id)));
-        updateStash();
-    }
-
     function updateStash() {
         const s = JSON.parse(localStorage.getItem('final_v1') || '[]');
         const l = document.getElementById('stash-list'); const t = document.getElementById('stash-total');
         if (s.length > 0) {
-            l.innerHTML = s.map(i => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed var(--border);"><div><b>${i.name}</b><br><span onclick="remove(${i.id})" style="color:red; cursor:pointer; font-size:0.75rem; font-weight:700;">Remove Item</span></div><b>$${i.price.toFixed(2)}</b></div>`).join('');
+            l.innerHTML = s.map(i => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border);"><div><b>${i.name}</b><br><span onclick="remove(${i.id})" style="color:red; cursor:pointer; font-size:0.7rem; font-weight:700;">Remove Item</span></div><b>$${i.price.toFixed(2)}</b></div>`).join('');
             t.innerText = `$${s.reduce((sum, i) => sum + i.price, 0).toFixed(2)}`;
         } else { l.innerHTML = "Stash is currently empty."; t.innerText = "$0.00"; }
+    }
+
+    function remove(id) {
+        let s = JSON.parse(localStorage.getItem('final_v1') || '[]');
+        localStorage.setItem('final_v1', JSON.stringify(s.filter(i => i.id !== id)));
+        updateStash();
     }
 
     function downloadLog() {
