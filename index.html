@@ -3,253 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriSnap | Intelligent Food Analysis</title>
+    <title>NutriSnap | Total Food Intelligence</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4f46e5;
-            --bg: #ffffff;
-            --surface: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --accent-green: #22c55e;
+            --primary: #4f46e5; --bg: #ffffff; --surface: #f8fafc;
+            --text-main: #0f172a; --text-muted: #64748b; --border: #e2e8f0;
         }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text-main);
-            margin: 0; padding: 0; line-height: 1.6;
-        }
-
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; }
         .app-shell { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 90px; }
         .content { padding: 25px; box-sizing: border-box; }
-
-        header { padding: 20px 25px 10px; }
-        .logo { font-weight: 800; font-size: 1.5rem; color: var(--primary); letter-spacing: -1.5px; }
-
-        /* SCREENS */
         .screen { display: none; }
         .active { display: block; animation: fadeInUp 0.4s ease forwards; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* HERO & DESCRIPTION */
-        .hero h1 { font-size: 2.4rem; margin: 0; letter-spacing: -1.5px; line-height: 1.1; }
+        
+        /* HERO & CARDS */
+        .hero h1 { font-size: 2.2rem; margin: 0; letter-spacing: -1.5px; line-height: 1.1; }
         .hero p { color: var(--text-muted); font-size: 1.05rem; margin-top: 15px; }
-        .guide-tip { display: block; margin-top: 12px; font-size: 0.9rem; color: var(--primary); font-weight: 600; text-decoration: none; }
-
-        /* FEATURE CARDS */
-        .section-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 35px 0 15px; display: block; }
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 15px; }
-
-        /* BUTTONS & NAV */
-        .btn-main { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 700; font-size: 1.1rem; width: 100%; cursor: pointer; transition: 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 20px; }
+        .section-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 30px 0 10px; display: block; }
+        
+        /* BUTTONS */
+        .btn-main { background: var(--primary); color: white; border: none; padding: 20px; border-radius: 18px; font-weight: 700; font-size: 1.1rem; width: 100%; cursor: pointer; transition: 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
+        .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .bento-item { background: white; border: 1px solid var(--border); padding: 12px; border-radius: 18px; cursor: pointer; transition: 0.2s; }
+        .b-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .b-val { display: block; font-size: 1rem; font-weight: 800; margin-top: 2px; }
+        
+        /* NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; }
         .nav-tab { background: none; border: none; color: var(--text-muted); font-size: 0.7rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-tab.active { color: var(--primary); }
 
-        /* BENTO GRID */
-        .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .bento-item { background: white; border: 1px solid var(--border); padding: 15px; border-radius: 20px; cursor: pointer; transition: 0.2s; }
-        .bento-item:hover { border-color: var(--primary); transform: translateY(-2px); }
-        .b-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-        .b-val { display: block; font-size: 1.1rem; font-weight: 800; margin-top: 4px; }
-
-        /* RECEIPT STYLING */
-        .receipt-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border); font-size: 0.9rem; }
-        .remove-trigger { color: #ef4444; font-size: 0.7rem; font-weight: 700; cursor: pointer; margin-top: 4px; display: block; }
-        
         #reader { width: 100%; border-radius: 24px; overflow: hidden; background: #000; margin-top: 15px; }
+        .encyclopedia-box { margin-top: 15px; padding: 15px; background: var(--primary-light); border-radius: 15px; font-size: 0.85rem; border: 1px solid var(--primary); display: none; }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
-    <header><div class="logo">NutriSnap</div></header>
-
     <div class="content">
         <div id="screen-home" class="screen active">
             <section class="hero">
                 <h1>Welcome.</h1>
-                <p>NutriSnap is a high-precision analysis engine that identifies food products and cross-references them against global nutrition and pricing databases.</p>
-                <a href="#" class="guide-tip" onclick="navigateTo('screen-guide')">💡 New here? View the 1-minute setup guide →</a>
+                <p>NutriSnap is a high-precision analysis engine that identifies food products by scanning their barcode and cross-references them against global nutrition and pricing databases to give you clear info on what nutrition is in the item.</p>
+                <button onclick="navigateTo('screen-guide')" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; padding:0; margin-top:10px;">📘 Not sure how to start? View the Guide →</button>
             </section>
 
-            <span class="section-label">Main Tools</span>
-            <button class="btn-main" onclick="startCamera()">📷 SCAN PRODUCT</button>
-            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 8px;">Uses Optical Recognition to find your product instantly.</p>
+            <span class="section-label">Tools</span>
+            <button class="btn-main" onclick="openScanner()">📷 SCAN BARCODE</button>
 
-            <span class="section-label">Your Session Stash</span>
+            <span class="section-label">Your Stash</span>
             <div class="card">
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0 0 15px 0;">The Stash is your private session history. It saves your scanned items and calculates a running cost total.</p>
-                <div id="stash-list">No items in your stash yet.</div>
-                <div style="display:flex; justify-content:space-between; border-top: 2px solid var(--text-main); margin-top: 15px; padding-top: 10px;">
-                    <b style="font-size: 1.1rem;">Est. Session Cost</b>
-                    <b id="stash-total" style="color:var(--primary); font-size: 1.1rem;">$0.00</b>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 10px 0;">The Stash is your session history. It saves items you've scanned and tracks your total estimated costs so you can view your grocery list later.</p>
+                <div id="stash-list" style="font-size:0.9rem;">No items saved.</div>
+                <div style="display:flex; justify-content:space-between; margin-top:15px; border-top: 2px solid var(--text-main); padding-top:10px;">
+                    <b>Session Total</b>
+                    <b id="stash-total" style="color:var(--primary)">$0.00</b>
                 </div>
             </div>
-            <button onclick="downloadStash()" style="width:100%; background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; font-size: 0.85rem;">Download Stash (.txt)</button>
+            <button onclick="downloadLog()" style="width:100%; background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; font-size:0.8rem;">Download List (.txt)</button>
         </div>
 
         <div id="screen-guide" class="screen">
-            <h1>How it works</h1>
+            <h1>How to use NutriSnap</h1>
             <div class="card">
-                <b style="color:var(--primary)">1. Scan</b>
-                <p style="font-size:0.9rem">Align any food barcode within the camera frame. We use Optical Barcode Recognition to extract the unique product ID.</p>
+                <b>1. Scan the Barcode</b>
+                <p style="font-size:0.9rem; color:var(--text-muted);">Position any product barcode in the camera view. We identify the UPC code instantly.</p>
             </div>
             <div class="card">
-                <b style="color:var(--primary)">2. Link</b>
-                <p style="font-size:0.9rem">The app connects to Open Food Facts and the Open Prices API to fetch laboratory-verified data points.</p>
+                <b>2. Deep Analysis</b>
+                <p style="font-size:0.9rem; color:var(--text-muted);">We link with Open Food Facts and the Open Prices API to pull a complete list of laboratory-verified nutrients.</p>
             </div>
             <div class="card">
-                <b style="color:var(--primary)">3. Analyze</b>
-                <p style="font-size:0.9rem">Review the breakdown and choose specific nutrients to investigate at 0.0001 precision.</p>
+                <b>3. Review & Stash</b>
+                <p style="font-size:0.9rem; color:var(--text-muted);">Choose specific nutrients to investigate at 0.0001 precision, then add the item to your Stash to save the data.</p>
             </div>
-            <button class="btn-main" onclick="navigateTo('screen-home')">GOT IT, LET'S GO</button>
+            <button class="btn-main" onclick="navigateTo('screen-home')">RETURN TO HOME</button>
         </div>
 
         <div id="screen-scan" class="screen">
-            <h2 style="text-align:center;">Center Barcode</h2>
+            <h2 style="text-align:center;">Scanning...</h2>
             <div id="reader"></div>
-            <button class="nav-tab" style="margin:20px auto; font-size: 1rem;" onclick="navigateTo('screen-home')">Cancel Scan</button>
+            <button class="btn-main" style="background:var(--text-muted); margin-top:20px;" onclick="location.reload()">CANCEL</button>
         </div>
 
         <div id="screen-results" class="screen">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:start;">
-                    <h2 id="res-name" style="margin:0; font-size: 1.4rem; flex:1; padding-right:10px;">Product</h2>
-                    <div id="res-price" style="background:#dcfce7; color:#166534; padding:5px 10px; border-radius:8px; font-weight:800; font-size:0.9rem;">$0.00</div>
+                    <h2 id="resName" style="margin:0; font-size:1.4rem; flex:1; padding-right:10px;">Product</h2>
+                    <div id="resPrice" style="background:#dcfce7; color:#166534; padding:5px 10px; border-radius:8px; font-weight:800;">$0.00</div>
                 </div>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:10px;">Product identified. Select a metric below to view the linked data analysis.</p>
-                <div class="bento" id="res-grid"></div>
-                <button class="btn-main" style="margin-top:20px;" onclick="saveToStash()">ADD TO STASH</button>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin:10px 0;">Analysis complete. Tap any nutrient below to see its specific role and high-precision value.</p>
+                <div class="bento" id="resGrid" style="max-height: 400px; overflow-y: auto;"></div>
+                <button class="btn-main" style="margin-top:20px;" onclick="commitToStash()">ADD TO STASH</button>
             </div>
         </div>
 
-        <div id="screen-detail" class="screen">
+        <div id="detail-screen" class="screen">
             <div class="card" style="text-align:center;">
-                <div id="dt-icon" style="font-size:4rem;">🧬</div>
-                <h3 id="dt-label" style="color:var(--text-muted); text-transform:uppercase; font-size:0.8rem; letter-spacing:1px; margin-bottom: 5px;">Linked Metric</h3>
-                <div id="dt-val" style="font-size:3rem; font-weight:900; margin:5px 0; color:var(--primary);">0.0000g</div>
+                <div id="dtIcon" style="font-size:4rem;">🧬</div>
+                <span id="dtLabel" style="text-transform:uppercase; color:var(--text-muted); font-weight:800; font-size:0.75rem; letter-spacing:1px;">Nutrient Investigation</span>
+                <div id="dtVal" style="font-size:3.2rem; font-weight:900; margin:10px 0; color:var(--primary);">0.0000g</div>
+                <div id="dtDesc" style="text-align:left; background:white; padding:20px; border-radius:20px; border:1px solid var(--border); font-size:0.95rem; line-height:1.5;"></div>
                 
-                <div style="text-align:left; background:white; padding:20px; border-radius:20px; border:1px solid var(--border); font-size:0.9rem; line-height:1.5;">
-                    <b>Technical Linkage:</b><br>
-                    <span id="dt-desc"></span>
-                </div>
-                <button class="btn-main" style="margin-top:25px;" onclick="navigateTo('screen-results')">BACK TO DASHBOARD</button>
+                <button id="wikiBtn" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; margin-top:15px; font-size:0.9rem;">❓ What is this nutrient?</button>
+                <div id="wikiBox" class="encyclopedia-box"></div>
+
+                <button class="btn-main" style="margin-top:20px;" onclick="navigateTo('screen-results')">BACK TO DASHBOARD</button>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
         <button class="nav-tab active" onclick="navigateTo('screen-home')"><span>🏠</span>Home</button>
-        <button class="nav-tab" onclick="startCamera()"><span>📷</span>Scan</button>
+        <button class="nav-tab" onclick="openScanner()"><span>📷</span>Scan</button>
         <button class="nav-tab" onclick="navigateTo('screen-guide')"><span>📘</span>Guide</button>
     </nav>
 </div>
 
 <script>
-    let activeProduct = null;
-    let activePrice = 0;
-    const scanner = new Html5Qrcode("reader");
+    let activeProd = null; let activePrice = 0; const qrcode = new Html5Qrcode("reader");
 
-    const nutrientMeta = {
-        'energy-kcal_100g': { label: 'Energy', icon: '⚡', unit: 'kcal' },
-        'sugars_100g': { label: 'Sugar Content', icon: '🍬', unit: 'g' },
-        'proteins_100g': { label: 'Protein Mass', icon: '💪', unit: 'g' },
-        'fat_100g': { label: 'Total Lipid', icon: '🥑', unit: 'g' },
-        'salt_100g': { label: 'Sodium/Salt', icon: '🧂', unit: 'g' },
-        'fiber_100g': { label: 'Dietary Fiber', icon: '🥦', unit: 'g' }
+    const allNutrients = {
+        'energy-kcal_100g': { label: 'Calories', icon: '⚡', unit: 'kcal', wiki: 'Calories are the energy your body gets from food to breathe, move, and think.' },
+        'sugars_100g': { label: 'Sugars', icon: '🍬', unit: 'g', wiki: 'Simple carbs that provide fast energy but can cause energy crashes if consumed in high amounts.' },
+        'proteins_100g': { label: 'Protein', icon: '💪', unit: 'g', wiki: 'The building blocks of muscles, skin, and organs. Essential for repair and growth.' },
+        'fat_100g': { label: 'Total Fat', icon: '🥑', unit: 'g', wiki: 'A source of essential fatty acids and energy. It helps your body absorb vitamins.' },
+        'saturated-fat_100g': { label: 'Saturated Fat', icon: '🍔', unit: 'g', wiki: 'Fats usually solid at room temperature. High intake is often linked to heart health concerns.' },
+        'salt_100g': { label: 'Salt/Sodium', icon: '🧂', unit: 'g', wiki: 'Helps balance fluids in the body, but too much can lead to high blood pressure.' },
+        'carbohydrates_100g': { label: 'Carbs', icon: '🍞', unit: 'g', wiki: 'Your body\'s main source of energy. They break down into glucose (sugar) in your blood.' },
+        'fiber_100g': { label: 'Fiber', icon: '🥦', unit: 'g', wiki: 'A type of carb that your body can\'t digest. It keeps your digestive system healthy and you feeling full.' },
+        'calcium_100g': { label: 'Calcium', icon: '🦴', unit: 'g', wiki: 'Essential for building and maintaining strong bones and teeth.' },
+        'iron_100g': { label: 'Iron', icon: '🧲', unit: 'g', wiki: 'Used to make hemoglobin, a protein in red blood cells that carries oxygen to your body.' },
+        'vitamin-c_100g': { label: 'Vitamin C', icon: '🍊', unit: 'g', wiki: 'Supports the immune system and helps the body heal wounds.' },
+        'potassium_100g': { label: 'Potassium', icon: '🍌', unit: 'g', wiki: 'An electrolyte that helps nerves function and muscles contract.' }
     };
 
     function navigateTo(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        // Sync nav highlighting
         if(id === 'screen-home') document.querySelectorAll('.nav-tab')[0].classList.add('active');
         if(id === 'screen-scan') document.querySelectorAll('.nav-tab')[1].classList.add('active');
         if(id === 'screen-guide') document.querySelectorAll('.nav-tab')[2].classList.add('active');
     }
 
-    function startCamera() {
-        navigateTo('screen-scan');
-        scanner.start({ facingMode: "environment" }, { fps: 20, qrbox: 250 }, (code) => {
-            scanner.stop().then(() => fetchAll(code));
-        });
+    function openScanner() { 
+        navigateTo('screen-scan'); 
+        qrcode.start({ facingMode: "environment" }, { fps: 20, qrbox: 250 }, (c) => { 
+            qrcode.stop().then(() => fetchData(c)); 
+        }); 
     }
 
-    async function fetchAll(barcode) {
-        const off = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`).then(r => r.json());
-        const pr = await fetch(`https://prices.openfoodfacts.org/api/v1/prices?product_code=${barcode}`).then(r => r.json());
-        
+    async function fetchData(code) {
+        const off = await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json`).then(r => r.json());
+        const pr = await fetch(`https://prices.openfoodfacts.org/api/v1/prices?product_code=${code}`).then(r => r.json());
         if (off.status === 1) {
-            activeProduct = off.product;
-            activePrice = (pr.items && pr.items.length > 0) ? parseFloat(pr.items[0].price) : 2.25;
+            activeProd = off.product;
+            activePrice = (pr.items && pr.items.length > 0) ? parseFloat(pr.items[0].price) : 2.50;
             renderResults();
-        } else { alert("Unrecognized barcode."); navigateTo('screen-home'); }
+        } else { alert("Product Unknown."); navigateTo('screen-home'); }
     }
 
     function renderResults() {
-        document.getElementById('res-name').innerText = activeProduct.product_name || "Unknown Product";
-        document.getElementById('res-price').innerText = `$${activePrice.toFixed(2)}`;
-        const grid = document.getElementById('res-grid');
-        grid.innerHTML = '';
-        Object.keys(nutrientMeta).forEach(k => {
-            const v = activeProduct.nutriments[k];
+        document.getElementById('resName').innerText = activeProd.product_name || "Unknown Item";
+        document.getElementById('resPrice').innerText = `$${activePrice.toFixed(2)}`;
+        const g = document.getElementById('resGrid'); g.innerHTML = '';
+        Object.keys(allNutrients).forEach(k => {
+            const v = activeProd.nutriments[k];
             if (v !== undefined) {
-                const div = document.createElement('div');
-                div.className = 'bento-item';
-                div.onclick = () => showDetail(k, v);
-                div.innerHTML = `<span class="b-label">${nutrientMeta[k].label}</span><span class="b-val">${v.toFixed(4)}${nutrientMeta[k].unit}</span>`;
-                grid.appendChild(div);
+                const d = document.createElement('div'); d.className = 'bento-item';
+                d.onclick = () => showDetail(k, v);
+                d.innerHTML = `<span class="b-label">${allNutrients[k].label}</span><span class="b-val">${v.toFixed(4)}${allNutrients[k].unit}</span>`;
+                g.appendChild(d);
             }
         });
         navigateTo('screen-results');
     }
 
     function showDetail(key, val) {
-        document.getElementById('dt-icon').innerText = nutrientMeta[key].icon;
-        document.getElementById('dt-label').innerText = nutrientMeta[key].label;
-        document.getElementById('dt-val').innerText = val.toFixed(4) + nutrientMeta[key].unit;
+        const p = val.toFixed(4); document.getElementById('dtIcon').innerText = allNutrients[key].icon;
+        document.getElementById('dtLabel').innerText = allNutrients[key].label;
+        document.getElementById('dtVal').innerText = p + allNutrients[key].unit;
+        document.getElementById('dtDesc').innerText = `By linking the product barcode with the Open Food Facts API, we extracted this precise data point. The value (${p}${allNutrients[key].unit}) represents the exact measurement detected per 100g sample.`;
         
-        // Technical explanation of the Link
-        document.getElementById('dt-desc').innerText = `To simplify this data, we linked the scanned barcode with the Open Food Facts API. This specific value (${val.toFixed(4)}${nutrientMeta[key].unit}) represents the precise mass detected per 100g sample. You can select any nutrient on the dashboard to trigger a specific cross-reference search for that item.`;
-        
+        // Setup Encyclopedia toggle
+        const wikiBox = document.getElementById('wikiBox');
+        wikiBox.style.display = 'none';
+        wikiBox.innerText = allNutrients[key].wiki;
+        document.getElementById('wikiBtn').onclick = () => {
+            wikiBox.style.display = wikiBox.style.display === 'none' ? 'block' : 'none';
+        };
+
         navigateTo('screen-detail');
     }
 
-    function saveToStash() {
-        let s = JSON.parse(localStorage.getItem('final_stash') || '[]');
-        s.push({ id: Date.now(), name: activeProduct.product_name, price: activePrice });
-        localStorage.setItem('final_stash', JSON.stringify(s));
-        updateStash();
-        navigateTo('screen-home');
+    function commitToStash() {
+        let s = JSON.parse(localStorage.getItem('final_v1') || '[]');
+        s.push({ id: Date.now(), name: activeProd.product_name, price: activePrice });
+        localStorage.setItem('final_v1', JSON.stringify(s));
+        location.reload();
     }
 
     function remove(id) {
-        let s = JSON.parse(localStorage.getItem('final_stash') || '[]');
-        localStorage.setItem('final_stash', JSON.stringify(s.filter(i => i.id !== id)));
+        let s = JSON.parse(localStorage.getItem('final_v1') || '[]');
+        localStorage.setItem('final_v1', JSON.stringify(s.filter(i => i.id !== id)));
         updateStash();
     }
 
     function updateStash() {
-        const s = JSON.parse(localStorage.getItem('final_stash') || '[]');
-        const list = document.getElementById('stash-list');
-        const total = document.getElementById('stash-total');
+        const s = JSON.parse(localStorage.getItem('final_v1') || '[]');
+        const l = document.getElementById('stash-list'); const t = document.getElementById('stash-total');
         if (s.length > 0) {
-            list.innerHTML = s.map(i => `<div class="receipt-item"><div><b>${i.name}</b><br><span class="remove-trigger" onclick="remove(${i.id})">Remove Entry</span></div><b>$${i.price.toFixed(2)}</b></div>`).join('');
-            total.innerText = `$${s.reduce((sum, i) => sum + i.price, 0).toFixed(2)}`;
-        } else { list.innerHTML = "No items in your stash yet."; total.innerText = "$0.00"; }
+            l.innerHTML = s.map(i => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--border);"><div><b>${i.name}</b><br><span onclick="remove(${i.id})" style="color:red; cursor:pointer; font-size:0.7rem;">Remove</span></div><b>$${i.price.toFixed(2)}</b></div>`).join('');
+            t.innerText = `$${s.reduce((sum, i) => sum + i.price, 0).toFixed(2)}`;
+        } else { l.innerHTML = "No items in stash."; t.innerText = "$0.00"; }
     }
 
-    function downloadStash() {
-        const s = JSON.parse(localStorage.getItem('final_stash') || '[]');
-        let txt = "NUTRISNAP SESSION LOG\n\n";
-        s.forEach(i => txt += `${i.name.padEnd(20)} | $${i.price.toFixed(2)}\n`);
-        const b = new Blob([txt], {type: 'text/plain'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(b); a.download = "nutrisnap_log.txt"; a.click();
+    function downloadLog() {
+        const s = JSON.parse(localStorage.getItem('final_v1') || '[]');
+        let txt = "NUTRISNAP LOG\n\n"; s.forEach(i => txt += `${i.name.padEnd(20)} $${i.price.toFixed(2)}\n`);
+        const b = new Blob([txt], {type: 'text/plain'}); const a = document.createElement('a');
+        a.href = URL.createObjectURL(b); a.download = "nutrisnap.txt"; a.click();
     }
 
     updateStash();
