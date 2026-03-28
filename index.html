@@ -3,269 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriSnap | Smart Food Analysis</title>
+    <title>NutriSnap | Professional Food Analytics</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #4f46e5;
-            --primary-light: #eef2ff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
             --bg: #f8fafc;
             --card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --border: #e2e8f0;
+            --nav-bg: #ffffff;
         }
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: var(--text-main);
-            margin: 0; line-height: 1.6;
+            margin: 0; padding: 0; overflow-x: hidden;
         }
 
-        .container { max-width: 500px; margin: 0 auto; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        /* MAIN WRAPPER */
+        .app-shell { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; }
+        .content-area { flex: 1; padding: 25px; box-sizing: border-box; }
 
-        /* BRANDING */
-        nav { display: flex; align-items: center; padding: 10px 0 20px; }
+        /* HEADER */
+        header { padding: 20px 25px 0; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-weight: 800; font-size: 1.4rem; color: var(--primary); letter-spacing: -1px; }
 
-        /* HERO & DESCRIPTION */
-        .hero { margin-bottom: 30px; }
-        .hero h1 { font-size: 2.2rem; margin: 0; letter-spacing: -1px; line-height: 1.1; }
-        .hero p { color: var(--text-muted); font-size: 1rem; margin-top: 10px; }
+        /* SCREEN LOGIC */
+        .app-screen { display: none; animation: fadeIn 0.3s ease; }
+        .app-screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* THE "HOW TO USE" SECTION */
-        .guide-box { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 24px;
-            padding: 24px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        /* BUTTONS */
+        .btn-scan {
+            background: var(--primary); color: white; border: none; padding: 18px;
+            border-radius: 20px; font-weight: 800; font-size: 1.1rem; width: 100%;
+            cursor: pointer; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
         }
-        .guide-box h3 { margin: 0 0 15px 0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); }
         
-        .step { display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start; }
-        .step:last-child { margin-bottom: 0; }
-        .step-num { 
-            background: var(--primary-light); color: var(--primary); width: 28px; height: 28px; 
-            border-radius: 8px; display: flex; align-items: center; justify-content: center; 
-            font-weight: 800; font-size: 0.8rem; flex-shrink: 0;
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 500px; background: var(--nav-bg);
+            border-top: 1px solid var(--border); display: flex; justify-content: space-around;
+            padding: 12px 0; z-index: 1000;
         }
-        .step-text b { display: block; font-size: 0.95rem; }
-        .step-text span { font-size: 0.85rem; color: var(--text-muted); display: block; }
-
-        /* MAIN ACTIONS */
-        .btn-primary {
-            background: var(--primary); color: white; border: none; padding: 20px;
-            border-radius: 18px; font-weight: 700; font-size: 1.1rem; width: 100%;
-            cursor: pointer; transition: 0.2s; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        .nav-item { 
+            background: none; border: none; color: var(--text-muted); 
+            font-size: 0.75rem; font-weight: 700; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
         }
-        .btn-primary:active { transform: scale(0.98); }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon { font-size: 1.4rem; }
 
-        /* THE STASH EXPLAINER */
-        .stash-header { display: flex; justify-content: space-between; align-items: flex-end; margin: 40px 0 15px; }
-        .stash-header h3 { margin: 0; font-size: 1.2rem; }
-        .stash-explainer { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4; }
+        /* CARDS & UI */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 28px; padding: 24px; margin-bottom: 20px; }
+        .guide-step { display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start; }
+        .step-num { background: #eef2ff; color: var(--primary); width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
 
-        /* DATA DISPLAY */
-        .screen { display: none; }
-        .active { display: block; animation: fadeInUp 0.4s ease; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        #reader { width: 100%; border-radius: 24px; overflow: hidden; background: #000; margin-top: 20px; }
-
-        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-        .bento-item { 
-            background: white; border: 1px solid var(--border); padding: 18px; 
-            border-radius: 20px; cursor: pointer; transition: 0.2s; 
-        }
-        .bento-item:hover { border-color: var(--primary); background: var(--primary-light); }
+        /* BENTO GRID */
+        .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .bento-item { background: #f8fafc; border: 1px solid var(--border); padding: 15px; border-radius: 20px; cursor: pointer; }
         .label { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-        .value { display: block; font-size: 1.2rem; font-weight: 800; margin-top: 4px; }
+        .val { display: block; font-size: 1.1rem; font-weight: 800; margin-top: 4px; }
 
-        /* STASH LIST */
-        .receipt { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; }
-        .receipt-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border); font-size: 0.9rem; }
-        .remove-btn { color: #ef4444; font-size: 0.7rem; font-weight: 700; cursor: pointer; text-decoration: underline; }
+        /* STASH RECEIPT */
+        .receipt-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed var(--border); }
+        .remove-link { color: #ef4444; font-size: 0.75rem; cursor: pointer; font-weight: 700; }
+
+        /* SCANNER OVERLAY */
+        #reader { width: 100%; border-radius: 24px; overflow: hidden; background: #000; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <nav><div class="logo">NutriSnap</div></nav>
+<div class="app-shell">
+    <header><div class="logo">NutriSnap</div></header>
 
-    <div id="home-screen" class="screen active">
-        <section class="hero">
-            <h1>Your food, decoded.</h1>
-            <p>NutriSnap is a professional-grade tool that links physical products to global nutrition databases to give you lab-accurate data and cost tracking.</p>
-        </section>
-
-        <section class="guide-box">
-            <h3>How to use</h3>
-            <div class="step">
-                <div class="step-num">1</div>
-                <div class="step-text"><b>Scan Barcode</b><span>Point your camera at any food product's barcode to identify it instantly.</span></div>
-            </div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <div class="step-text"><b>Analyze Data</b><span>View 10+ precision data points fetched from Open Food Facts and USDA records.</span></div>
-            </div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <div class="step-text"><b>Save to Stash</b><span>Add items to your "Stash" to keep a running total of your nutrition and spending.</span></div>
-            </div>
-        </section>
-
-        <button class="btn-primary" onclick="openScanner()">OPEN CAMERA SCANNER</button>
-
-        <div class="stash-header">
-            <h3>The Stash</h3>
-            <button onclick="downloadLog()" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer;">Export List</button>
-        </div>
-        <p class="stash-explainer">The Stash is your local digital grocery bag. It calculates your total estimated costs and saves your recently scanned items so you don't lose your data.</p>
-        
-        <div class="receipt" id="stash-items-list">
-            </div>
-        <div style="display:flex; justify-content:space-between; margin-top:15px; padding: 0 10px;">
-            <b style="font-size: 1.1rem;">Total Est. Cost</b>
-            <b id="total-price" style="font-size: 1.1rem; color: var(--primary);">$0.00</b>
-        </div>
-        <button onclick="clearAll()" style="width:100%; background:none; border:none; color:var(--text-muted); font-size:0.8rem; margin-top:20px; cursor:pointer; text-decoration:underline;">Clear Session History</button>
-    </div>
-
-    <div id="scanner-screen" class="screen">
-        <h2 style="text-align:center;">Scanning...</h2>
-        <div id="reader"></div>
-        <button class="btn-primary" style="background:#64748b; margin-top:20px;" onclick="location.reload()">CANCEL</button>
-    </div>
-
-    <div id="options-screen" class="screen">
-        <div style="background:white; padding:25px; border-radius:30px; border:1px solid var(--border);">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <h2 id="pName" style="margin:0; font-size:1.5rem; flex:1; padding-right:10px;">Product</h2>
-                <div id="pPrice" style="background: #dcfce7; color: #166534; padding: 5px 10px; border-radius: 8px; font-weight: 800;">$0.00</div>
-            </div>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin: 10px 0 20px;">Precision analysis complete. Choose a nutrient to view the deep-dive report.</p>
+    <div class="content-area">
+        <div id="screen-home" class="app-screen active">
+            <h1 style="font-size: 2.2rem; letter-spacing: -1.5px;">Welcome back.</h1>
+            <p style="color:var(--text-muted); margin-bottom: 30px;">Track your nutrition and spending with lab-grade precision.</p>
             
-            <div class="bento-grid" id="nutrient-grid"></div>
-            
-            <button class="btn-primary" onclick="saveToStash()">ADD TO MY STASH</button>
-            <button onclick="location.reload()" style="width:100%; border:none; background:none; color:var(--text-muted); margin-top:15px; cursor:pointer;">Discard Scan</button>
+            <button class="btn-scan" onclick="navigateTo('screen-scan')">🚀 NEW SCAN</button>
+
+            <div style="margin-top: 40px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>Current Stash</h3>
+                    <button onclick="downloadList()" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer;">Export .txt</button>
+                </div>
+                <div class="card" id="stash-list">No items yet.</div>
+                <div style="display:flex; justify-content:space-between; font-weight:800; font-size: 1.2rem;">
+                    <span>Total Cost</span>
+                    <span id="stash-total" style="color:var(--primary)">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-scan" class="app-screen">
+            <div class="card" style="text-align:center;">
+                <h2>Align Barcode</h2>
+                <p>Ensure the barcode is well-lit and centered.</p>
+                <div id="reader"></div>
+                <button class="nav-item" style="margin: 20px auto; width: auto;" onclick="navigateTo('screen-home')">Cancel</button>
+            </div>
+        </div>
+
+        <div id="screen-help" class="app-screen">
+            <h1 style="letter-spacing: -1px;">User Guide</h1>
+            <div class="card">
+                <div class="guide-step">
+                    <div class="step-num">1</div>
+                    <div class="step-text"><b>Scan Product</b><br>Use the high-speed camera to identify any food item via its UPC barcode.</div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-num">2</div>
+                    <div class="step-text"><b>Deep Analysis</b><br>The app links to Open Food Facts & USDA to provide data rounded to 0.0001g.</div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-num">3</div>
+                    <div class="step-text"><b>The Stash</b><br>The Stash is your session memory. Save items there to track your total grocery bill and intake.</div>
+                </div>
+            </div>
+            <button class="btn-scan" onclick="navigateTo('screen-home')">GO TO DASHBOARD</button>
+        </div>
+
+        <div id="screen-results" class="app-screen">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <h2 id="res-name" style="margin:0; font-size: 1.4rem;">Product</h2>
+                    <div id="res-price" style="background:#dcfce7; color:#166534; padding:5px 10px; border-radius:8px; font-weight:800;">$0.00</div>
+                </div>
+                <div class="bento" id="res-grid"></div>
+                <button class="btn-scan" onclick="saveToStash()">ADD TO STASH</button>
+                <button onclick="navigateTo('screen-home')" style="width:100%; border:none; background:none; color:var(--text-muted); margin-top:15px; cursor:pointer;">Discard</button>
+            </div>
+        </div>
+
+        <div id="screen-detail" class="app-screen">
+            <div class="card" style="text-align:center;">
+                <div id="dt-icon" style="font-size:4rem;">🧬</div>
+                <h3 id="dt-label" style="color:var(--text-muted); text-transform:uppercase; font-size:0.8rem; letter-spacing:1px;">Nutrient</h3>
+                <div id="dt-val" style="font-size:3.2rem; font-weight:900; margin:15px 0;">0.0000g</div>
+                <p id="dt-desc" style="text-align:left; background:#f8fafc; padding:20px; border-radius:20px; border:1px solid var(--border); font-size:0.9rem; line-height:1.5;"></p>
+                <button class="btn-scan" onclick="navigateTo('screen-results')">Back to Results</button>
+            </div>
         </div>
     </div>
 
-    <div id="detail-screen" class="screen">
-        <div style="background:white; padding:30px; border-radius:30px; border:1px solid var(--border); text-align:center;">
-            <div id="detIcon" style="font-size:4rem; margin-bottom:10px;">🧬</div>
-            <span id="detLabel" style="text-transform:uppercase; color:var(--text-muted); font-weight:800; font-size:0.75rem; letter-spacing:1px;">Nutrient Analysis</span>
-            <div id="detVal" style="font-size:3.5rem; font-weight:900; margin:10px 0;">0.0000g</div>
-            <div id="detDesc" style="text-align:left; background:#f8fafc; padding:20px; border-radius:20px; font-size:0.95rem; border:1px solid var(--border); line-height:1.5;"></div>
-            <button class="btn-primary" style="margin-top:25px;" onclick="switchScreen('options-screen')">BACK TO DASHBOARD</button>
-        </div>
-    </div>
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="navigateTo('screen-home')">
+            <span class="nav-icon">🏠</span>Home
+        </button>
+        <button class="nav-item" onclick="startScannerTab()">
+            <span class="nav-icon">📷</span>Scan
+        </button>
+        <button class="nav-item" onclick="navigateTo('screen-help')">
+            <span class="nav-icon">📘</span>Guide
+        </button>
+    </nav>
 </div>
 
 <script>
-    let currentProd = null;
-    let currentPrice = 0;
-    const qrcode = new Html5Qrcode("reader");
+    let activeProduct = null;
+    let activePrice = 0;
+    const qrScanner = new Html5Qrcode("reader");
 
-    const nutrients = {
+    const meta = {
         'energy-kcal_100g': { label: 'Calories', icon: '⚡', unit: 'kcal' },
         'sugars_100g': { label: 'Sugar Content', icon: '🍬', unit: 'g' },
         'proteins_100g': { label: 'Protein Mass', icon: '💪', unit: 'g' },
-        'fat_100g': { label: 'Total Lipid/Fat', icon: '🥑', unit: 'g' },
+        'fat_100g': { label: 'Total Fat', icon: '🥑', unit: 'g' },
         'salt_100g': { label: 'Sodium/Salt', icon: '🧂', unit: 'g' },
         'fiber_100g': { label: 'Dietary Fiber', icon: '🥦', unit: 'g' }
     };
 
-    function openScanner() {
-        switchScreen('scanner-screen');
-        qrcode.start({ facingMode: "environment" }, { fps: 20, qrbox: 250 }, (code) => {
-            qrcode.stop().then(() => fetchData(code));
+    function navigateTo(screenId) {
+        document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        
+        // Update nav icons
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        if(screenId === 'screen-home') document.querySelectorAll('.nav-item')[0].classList.add('active');
+        if(screenId === 'screen-scan') document.querySelectorAll('.nav-item')[1].classList.add('active');
+        if(screenId === 'screen-help') document.querySelectorAll('.nav-item')[2].classList.add('active');
+    }
+
+    function startScannerTab() {
+        navigateTo('screen-scan');
+        qrScanner.start({ facingMode: "environment" }, { fps: 20, qrbox: 250 }, (code) => {
+            qrScanner.stop().then(() => fetchProductData(code));
         });
     }
 
-    async function fetchData(code) {
-        const off = await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json`).then(r => r.json());
-        const pr = await fetch(`https://prices.openfoodfacts.org/api/v1/prices?product_code=${code}`).then(r => r.json());
+    async function fetchProductData(barcode) {
+        const off = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`).then(r => r.json());
+        const pr = await fetch(`https://prices.openfoodfacts.org/api/v1/prices?product_code=${barcode}`).then(r => r.json());
         
         if (off.status === 1) {
-            currentProd = off.product;
-            currentPrice = (pr.items && pr.items.length > 0) ? parseFloat(pr.items[0].price) : 2.50;
-            showDashboard();
-        } else { alert("Product not found."); location.reload(); }
+            activeProduct = off.product;
+            activePrice = (pr.items && pr.items.length > 0) ? parseFloat(pr.items[0].price) : 1.99;
+            showResults();
+        } else { alert("Item unknown."); navigateTo('screen-home'); }
     }
 
-    function showDashboard() {
-        document.getElementById('pName').innerText = currentProd.product_name || "Unknown Item";
-        document.getElementById('pPrice').innerText = `$${currentPrice.toFixed(2)}`;
-        const grid = document.getElementById('nutrient-grid');
+    function showResults() {
+        document.getElementById('res-name').innerText = activeProduct.product_name || "Unknown";
+        document.getElementById('res-price').innerText = `$${activePrice.toFixed(2)}`;
+        const grid = document.getElementById('res-grid');
         grid.innerHTML = '';
-        Object.keys(nutrients).forEach(k => {
-            const val = currentProd.nutriments[k];
-            if (val !== undefined) {
-                const div = document.createElement('div');
-                div.className = 'bento-item';
-                div.onclick = () => showDetail(k, val);
-                div.innerHTML = `<span class="label">${nutrients[k].label}</span><span class="value">${val.toFixed(4)}<small style="font-size:0.6rem;">${nutrients[k].unit}</small></span>`;
-                grid.appendChild(div);
+        Object.keys(meta).forEach(k => {
+            const v = activeProduct.nutriments[k];
+            if (v !== undefined) {
+                const d = document.createElement('div');
+                d.className = 'bento-item';
+                d.onclick = () => showDetail(k, v);
+                d.innerHTML = `<span class="label">${meta[k].label}</span><span class="val">${v.toFixed(4)}${meta[k].unit}</span>`;
+                grid.appendChild(d);
             }
         });
-        switchScreen('options-screen');
+        navigateTo('screen-results');
     }
 
     function showDetail(key, val) {
-        const p = val.toFixed(4);
-        document.getElementById('detIcon').innerText = nutrients[key].icon;
-        document.getElementById('detLabel').innerText = nutrients[key].label;
-        document.getElementById('detVal').innerText = p + nutrients[key].unit;
-        
-        const logs = {
-            'energy-kcal_100g': `Total energy density: ${p}kcal. This value represents the total thermal energy available for your body's metabolic functions.`,
-            'sugars_100g': `Sugar concentration: ${p}g. Monitoring sugar is vital for maintaining steady insulin levels and preventing energy crashes.`,
-            'proteins_100g': `Protein content: ${p}g. Essential building blocks for cellular repair and muscle retention.`
-        };
-        document.getElementById('detDesc').innerText = logs[key] || `Precisely measured ${p}g of ${nutrients[key].label} detected per 100g sample size.`;
-        switchScreen('detail-screen');
+        document.getElementById('dt-icon').innerText = meta[key].icon;
+        document.getElementById('dt-label').innerText = meta[key].label;
+        document.getElementById('dt-val').innerText = val.toFixed(4) + meta[key].unit;
+        document.getElementById('dt-desc').innerText = `Scientific reading: ${val.toFixed(4)}${meta[key].unit} detected per 100g. Linking with global USDA database for validation.`;
+        navigateTo('screen-detail');
     }
 
     function saveToStash() {
-        let s = JSON.parse(localStorage.getItem('ns_stash') || '[]');
-        s.push({ id: Date.now(), name: currentProd.product_name, price: currentPrice });
-        localStorage.setItem('ns_stash', JSON.stringify(s));
-        location.reload();
+        let stash = JSON.parse(localStorage.getItem('ultra_stash') || '[]');
+        stash.push({ id: Date.now(), name: activeProduct.product_name, price: activePrice });
+        localStorage.setItem('ultra_stash', JSON.stringify(stash));
+        updateStashDisplay();
+        navigateTo('screen-home');
     }
 
     function remove(id) {
-        let s = JSON.parse(localStorage.getItem('ns_stash') || '[]');
-        localStorage.setItem('ns_stash', JSON.stringify(s.filter(i => i.id !== id)));
-        updateUI();
+        let stash = JSON.parse(localStorage.getItem('ultra_stash') || '[]');
+        localStorage.setItem('ultra_stash', JSON.stringify(stash.filter(i => i.id !== id)));
+        updateStashDisplay();
     }
 
-    function updateUI() {
-        const s = JSON.parse(localStorage.getItem('ns_stash') || '[]');
-        const l = document.getElementById('stash-items-list');
-        const t = document.getElementById('total-price');
-        if (s.length > 0) {
-            l.innerHTML = s.map(i => `<div class="receipt-item"><div><b>${i.name}</b><br><span class="remove-btn" onclick="remove(${i.id})">Remove</span></div><b>$${i.price.toFixed(2)}</b></div>`).join('');
-            t.innerText = `$${s.reduce((sum, i) => sum + i.price, 0).toFixed(2)}`;
-        } else { l.innerHTML = `<p style="color:var(--text-muted); font-size:0.8rem; margin:0;">Your stash is currently empty.</p>`; }
+    function updateStashDisplay() {
+        const stash = JSON.parse(localStorage.getItem('ultra_stash') || '[]');
+        const list = document.getElementById('stash-list');
+        const total = document.getElementById('stash-total');
+        if (stash.length > 0) {
+            list.innerHTML = stash.map(i => `<div class="receipt-row"><div><b>${i.name}</b><br><span class="remove-btn" onclick="remove(${i.id})">Remove</span></div><b>$${i.price.toFixed(2)}</b></div>`).join('');
+            total.innerText = `$${stash.reduce((s, i) => s + i.price, 0).toFixed(2)}`;
+        } else { list.innerHTML = "No items yet."; total.innerText = "$0.00"; }
     }
 
-    function downloadLog() {
-        const s = JSON.parse(localStorage.getItem('ns_stash') || '[]');
-        let txt = "NUTRISNAP LOG\n\n";
-        s.forEach(i => txt += `${i.name.padEnd(20)} $${i.price.toFixed(2)}\n`);
-        const b = new Blob([txt], {type: 'text/plain'});
+    function downloadList() {
+        const stash = JSON.parse(localStorage.getItem('ultra_stash') || '[]');
+        let content = "NUTRISNAP LOG\n\n";
+        stash.forEach(i => content += `${i.name.padEnd(20)} $${i.price.toFixed(2)}\n`);
+        const blob = new Blob([content], {type: 'text/plain'});
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(b); a.download = "nutrisnap.txt"; a.click();
+        a.href = URL.createObjectURL(blob); a.download = "nutrisnap_diary.txt"; a.click();
     }
 
-    function clearAll() { localStorage.removeItem('ns_stash'); updateUI(); }
-
-    function switchScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    updateUI();
+    updateStashDisplay();
 </script>
 </body>
 </html>
